@@ -9,3 +9,4 @@
 
 - ```source .env/bin/activate```
 - ```pip install -r requirements.txt```
+- ```python3 feed_comparison.py``` or ```python feed_comparison.py``` (might make a shell script to do these steps automatically)
