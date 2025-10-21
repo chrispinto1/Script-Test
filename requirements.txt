@@ -1,1 +1,3 @@
 striprtf
+requests
+beautifulsoup4
