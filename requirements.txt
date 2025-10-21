@@ -1,3 +1,4 @@
 striprtf
 requests
 beautifulsoup4
+selenium
