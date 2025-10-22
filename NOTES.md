@@ -16,6 +16,15 @@
         next_page_token
     }
 
+## Extra
+#### Types of events that uses images
+- Goal
+    - Team image
+    - Player Image
+- Substitution
+- ShotAtGoal
+- Foul
+
 ## XML format:
     <Event 
         MatchId="MLS-MAT-00067D" 
@@ -326,3 +335,5 @@
             26. OtherPlayerAction
             27. Penalty - which can contain children of tags:
                 a. ShotAtGoal
+
+HTML has the following classes

@@ -3,16 +3,16 @@ import xml.etree.ElementTree as ET
 import requests
 import sys
 
-RTF_FEED_PATH = 'feeds.rtf'
-
+RTF_FEED_PATH = './assets/feeds.rtf'
+BASE_API_URL = 'https://stats-api.mlssoccer.com/matches/MLS-MAT-00067D/commentary?'
 class FeedComparison():
-    def __init__(self, rtf_feed_path: str):
+    def __init__(self, rtf_feed_path: str, base_api_url: str):
         """
         
         """
         self.feed_data_as_xml = None
         self.rtf_feed_path = rtf_feed_path
-        self.base_url = 'https://stats-api.mlssoccer.com/matches/MLS-MAT-00067D/commentary?'
+        self.base_api_url = base_api_url
         self.api_response_data = None
         self.events_dict = {}
 
@@ -119,8 +119,7 @@ if __name__ == "__main__":
         if arg_val.lower() == "true":
             get_full_report = True
 
-    feed_comparison = FeedComparison(RTF_FEED_PATH)
-    print(feed_comparison.compare_feed_data(get_full_report))
+    print(FeedComparison(RTF_FEED_PATH, BASE_API_URL).compare_feed_data(get_full_report))
 
 
 """
