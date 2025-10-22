@@ -19,4 +19,4 @@ This python script accepts an optional command line argument, by default it's se
 | script argument | output                                                             |
 |:-----------------:|------------------------------------------------------------------|
 |True             | **Any unmatched**: The following events are not included in<br>the XML feed: comma_separate_list of unmatched<br>event ids<br><br>**All matched**: All the events are included in the xml feed|
-|      False      | **If any matched**: True<br><br>**if no matches**: False                    |
+|      No Argument or False      | **If any matched**: True<br><br>**if no matches**: False                    |
