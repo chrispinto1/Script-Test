@@ -5,7 +5,16 @@
 ## possible apis available to read from:
 
 ### GET - https://stats-api.mlssoccer.com/matches/MLS-MAT-00067D/commentary? - 
-### Not sure if this would be for this use case as there's no images in the return and also see that its paginated by 20 instances at a time and with a parameter of page_token which I won't know the value of
+#### Not sure if this would be for this use case as there's no images in the return and <s>also see that its paginated by 20 instances at a time and with a parameter of page_token which I won't know the value of</s>. Actually found that it's given in the pagination response as next_page_token
+
+#### confirmed that the commentary without a next_page_token is the last one in the pagination and it's a missing key and not set to null
+
+#### Commentary API setup:
+    {
+        commentary: Array<Event/Commentary>,
+        match_info: Object - match data like date, name, season, etc
+        next_page_token
+    }
 
 ## XML format:
     <Event 
