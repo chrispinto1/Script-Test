@@ -23,23 +23,26 @@ This python script accepts an optional command line argument, by default it's se
 
 # Challenge Enhancements
 
-**Validate images for each event(you can download these images and assume that the source of truth is local)**
+### Enhancement #1 - **Validate images for each event(you can download these images and assume that the source of truth is local)**
 
 ### Questions
 - Validate as in the image is the correct image?
 - Validate that the image aligns with the correct file path? (i.e Not taking into account the contents of the image itself?)
 - Does this mean the approach needed to take of getting the feed data is supposed to be through HTML? The images aren't part of the api call I found to commentary and would require multiple api calls (which is ok but don't know if that's the correct approach)
+---
 
-**Describe how you will automate this to generate an alert indicating the failure (use any tool you are comfortable with)**
+### Enhancement #2 - **Describe how you will automate this to generate an alert indicating the failure (use any tool you are comfortable with)**
 
-Random text
+---
 
-**How to improve the code execution if you need to run the same code against parallel matches running at the same time, let's say 10?**
+### Enhancement #3 - **How to improve the code execution if you need to run the same code against parallel matches running at the same time, let's say 10?**
 
 ### Questions
 
 - Is this going to an api call?
 - Is this going to be a script thats run 
+
+### Response
 
 There's a few ways to go about this
 
@@ -87,3 +90,4 @@ for match_api_url in matches_dict:
             - Allow retries?
             - Allow some to fail and continue but log the ones that fails?
 ```
+---
