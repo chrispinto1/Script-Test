@@ -1,6 +1,7 @@
 from striprtf.striprtf import rtf_to_text
 import xml.etree.ElementTree as ET
 import requests
+import sys
 
 RTF_FEED_PATH = 'feeds.rtf'
 
@@ -25,7 +26,7 @@ class FeedComparison():
         rtf_string = rtf_to_text(rtf_file_text)
         self.feed_data_as_xml = ET.fromstring(rtf_string)
 
-    def compare_feed_data(self, get_full_report: bool = False):
+    def compare_feed_data(self, get_full_report: bool):
         """
         
         """
@@ -111,10 +112,15 @@ class FeedComparison():
                     self._set_response_data(data)
                     token = data.get("next_page_token")
 
+if __name__ == "__main__":
+    get_full_report = False
+    if len(sys.argv) > 1:
+        arg_val = sys.argv[1]
+        if arg_val.lower() == "true":
+            get_full_report = True
 
-feed_comparison = FeedComparison(RTF_FEED_PATH)
-feed_contains_at_least_one_event = feed_comparison.compare_feed_data(True)
-print(feed_contains_at_least_one_event)
+    feed_comparison = FeedComparison(RTF_FEED_PATH)
+    print(feed_comparison.compare_feed_data(get_full_report))
 
 
 """
