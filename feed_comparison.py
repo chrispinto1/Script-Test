@@ -51,14 +51,6 @@ class FeedComparison():
 feed_comparison = FeedComparison(RTF_FEED_PATH, FEED_URL)
 feed_comparison.parse_html_feed_section()
 
-"""
-    NOTES:
-
-    possible apis available to read from:
-
-    GET - https://stats-api.mlssoccer.com/matches/MLS-MAT-00067D/commentary? - 
-    This is a bit more work as there's no images returned in this version
-"""
 
 """
     UNUSED PREVIOUS CODE
