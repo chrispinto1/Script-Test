@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import requests
 import sys
 
-RTF_FEED_PATH = './assets/feeds.rtf'
+RTF_FEED_PATH = './assets/data/feeds.rtf'
 BASE_API_URL = 'https://stats-api.mlssoccer.com/matches/MLS-MAT-00067D/commentary?'
 class FeedComparison():
     def __init__(self, rtf_feed_path: str, base_api_url: str):
@@ -112,7 +112,7 @@ class FeedComparison():
 
             token = self.api_response_data.get("next_page_token")
             if token:
-                self.api_response_data = self._fetch_data(self.base_url + f'page_token={token}')
+                self.api_response_data = self._fetch_data(self.base_api_url + f'page_token={token}')
                 commentary_data = self.api_response_data.get('commentary')
 
             return False
@@ -142,7 +142,7 @@ class FeedComparison():
             parameter is set to True
         """
         
-        data = self._fetch_data(self.base_url)
+        data = self._fetch_data(self.base_api_url)
         data = data.json()
         if data:
             self._set_response_data(data)
@@ -150,7 +150,7 @@ class FeedComparison():
                 commentary_data = data.get("commentary")
                 token = data.get("next_page_token")
                 while token and len(commentary_data):
-                    data = self._fetch_data(self.base_url + f"page_token={token}")
+                    data = self._fetch_data(self.base_api_url + f"page_token={token}")
                     data = data.json()
                     self._set_response_data(data)
                     token = data.get("next_page_token")
