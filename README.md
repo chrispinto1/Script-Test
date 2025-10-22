@@ -33,13 +33,19 @@ This python script accepts an optional command line argument, by default it's se
 
 ### Enhancement #2 - **Describe how you will automate this to generate an alert indicating the failure (use any tool you are comfortable with)**
 
+### Response
+
+(This is an assumption of how this script will be triggered)
+
+How I would automate this is to have a scheduled job to hit an api endpoint that performs this matching and confirming the data. I would update the methods to add better response status so that we can use a tool like Prometheus to pick up on status codes of a certain status. Prometheus does allow for triggering an alert using AlertManager which can then send it to (i.e slack, email, etc)
+
 ---
 
 ### Enhancement #3 - **How to improve the code execution if you need to run the same code against parallel matches running at the same time, let's say 10?**
 
 ### Questions
 
-- Is this going to an api call?
+- Is this going to be an api call?
 - Is this going to be a script thats run 
 
 ### Response
