@@ -8,7 +8,18 @@ BASE_API_URL = 'https://stats-api.mlssoccer.com/matches/MLS-MAT-00067D/commentar
 class FeedComparison():
     def __init__(self, rtf_feed_path: str, base_api_url: str):
         """
-        
+            Sets the following instance attributes
+
+            feed_data_as_xml -> None
+            rtf_feed_path -> The Path given in the first parameter
+            base_api_url -> The url given in the second parameter
+            api_response_data -> None
+            events_dict -> {} empty dictionary -> It will have the following format 
+                {
+                    commentary: List<Event>
+                    match_info: Dictionary
+                    next_page_token: String - Will be present only if there's a next page in the pagination
+                }
         """
         self.feed_data_as_xml = None
         self.rtf_feed_path = rtf_feed_path
@@ -18,17 +29,30 @@ class FeedComparison():
 
     def get_xml_feed(self):
         """
-        
+            This method opens the RTF file and gets the xml version of the content.
         """
         with open(self.rtf_feed_path, 'r', encoding='utf-8') as file:
             rtf_file_text = file.read()
 
-        rtf_string = rtf_to_text(rtf_file_text)
-        self.feed_data_as_xml = ET.fromstring(rtf_string)
+        try:
+            rtf_string = rtf_to_text(rtf_file_text)
+            self.feed_data_as_xml = ET.fromstring(rtf_string)
+        except:
+            print("Unable to convert the RTF file content to XML")
 
     def compare_feed_data(self, get_full_report: bool):
         """
-        
+            Parameters:
+
+            get_full_report (default = False) - A boolean type, which is determine the type of response you get back from the method.
+                                                If set to true, it will get all the data that isn't included and display it or will 
+                                                display all match. If false, it will get just check if any match and return true and false
+
+            This method will do the following:
+            
+            1. Get the feed data from the api if the api_response_data attribute is None
+            2. Get the xml data from the file
+            3. return either if any match or which are missing based on the parameter get_full_report explained above
         """
         if not self.api_response_data:
             self._get_feed_data_from_api(get_full_report)
@@ -52,13 +76,20 @@ class FeedComparison():
 
     def _set_response_data(self, data):
         """
-        
+            This method sets the api_response_data attribute to the data passed in
         """
         self.api_response_data = data
 
     def _build_events_dict(self):
         """
-        
+            This method builds a dictionary with the RTF file given with the xml in its content.
+            The dictionary will be built out as
+
+            {
+                ["eventId"] = Event_element
+            }
+
+            This is in the event you need to do more with the event element based on event ids
         """
         if not len(self.events_dict):
             events_in_feed = self.feed_data_as_xml.findall('Event')
@@ -67,7 +98,11 @@ class FeedComparison():
 
     def _check_for_matching_data(self):
         """"
-        
+            This method will find if any matches are found the the api feed and the RTF file.
+            If there's no matches with the current set of data, it will reach out to the next
+            available link and set the data until theres a match.
+
+            This method returns True or False
         """
         commentary_data = self.api_response_data.get('commentary')
         while True:
@@ -75,15 +110,19 @@ class FeedComparison():
                 if commentary['event_id'] in self.events_dict:
                     return True
 
-            if self.api_response_data.get("token"):
-                self.api_response_data = self._fetch_data(self.base_url + f'page_token={self.api_response_data.get("token")}')
+            token = self.api_response_data.get("next_page_token")
+            if token:
+                self.api_response_data = self._fetch_data(self.base_url + f'page_token={token}')
                 commentary_data = self.api_response_data.get('commentary')
 
             return False
 
     def _fetch_data(self, url: str):
         """
-        
+            Parameters:
+                url: string
+
+            This method fetches data from the url given and ensures it returned ok, if not it will return an error message
         """
         try:
             request = requests.get(url)
@@ -95,8 +134,12 @@ class FeedComparison():
 
     def _get_feed_data_from_api(self, get_full_report: bool):
         """
-            This method is hard coded to the design of the api call (i.e not dynamic for all use cases/not a method to reuse for fetching other data)
 
+            Parameters:
+                get_full_report - boolean
+
+            This method gets the data from the api url and get the full data before moving forward if the get_full_report
+            parameter is set to True
         """
         
         data = self._fetch_data(self.base_url)
