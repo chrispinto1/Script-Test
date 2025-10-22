@@ -18,12 +18,10 @@ class FeedComparison():
 
         rtf_string = rtf_to_text(rtf_file_text)
         self.xml = ET.fromstring(rtf_string)
-        return
 
-    def parse_api_feed_section(self):
+    def get_feed_data_from_api(self):
         if not len(self.commentary_data):
             self._get_feed_data_from_api()
-        return
 
     def _add_commentary_data(self, data):
         commentary_data = data.get("commentary")
@@ -44,8 +42,6 @@ class FeedComparison():
                 data = data.json()
                 self._add_commentary_data(data)
                 token = data.get("next_page_token")
-        
-        return
 
     def _fetch_data(self, url: str):
         try:
@@ -57,7 +53,7 @@ class FeedComparison():
             print(f"There was an issue fetching the data. Error: {e}")
 
 feed_comparison = FeedComparison(RTF_FEED_PATH)
-feed_comparison.parse_api_feed_section()
+feed_comparison.get_feed_data_from_api()
 
 
 """
