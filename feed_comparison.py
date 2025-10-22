@@ -7,26 +7,49 @@ RTF_FEED_PATH = 'feeds.rtf'
 
 class FeedComparison():
     def __init__(self, rtf_feed_path: str):
-        self.xml = None
+        self.feed_data_as_xml = None
         self.rtf_feed_path = rtf_feed_path
         self.base_url = "https://stats-api.mlssoccer.com/matches/MLS-MAT-00067D/commentary?"
         self.commentary_data = []
+        self.events_dict = {}
 
     def get_xml_feed(self):
         with open(self.rtf_feed_path, 'r', encoding='utf-8') as file:
             rtf_file_text = file.read()
 
         rtf_string = rtf_to_text(rtf_file_text)
-        self.xml = ET.fromstring(rtf_string)
+        self.feed_data_as_xml = ET.fromstring(rtf_string)
 
-    def get_feed_data_from_api(self):
+    def compare_feed_data(self):
         if not len(self.commentary_data):
             self._get_feed_data_from_api()
+
+        if self.feed_data_as_xml == None:
+            self.get_xml_feed()
+            self._build_events_dict()
+
+        if self.commentary_data is not None and self.feed_data_as_xml is not None and len(self.events_dict):
+            return
 
     def _add_commentary_data(self, data):
         commentary_data = data.get("commentary")
         if commentary_data and len(commentary_data):
             self.commentary_data = self.commentary_data + commentary_data
+
+    def _build_events_dict(self):
+        if not len(self.events_dict):
+            events_in_feed = self.feed_data_as_xml.findall('Event')
+            for event in events_in_feed:
+                self.events_dict[event.attrib.get("EventId")] = event
+
+    def _fetch_data(self, url: str):
+        try:
+            request = requests.get(url)
+            request.raise_for_status()
+            return request
+        except requests.exceptions.HTTPError as e:
+            # Possibly log/report depending on what the case would be for a bad request from automation (if we are hitting an internal api in the automation)
+            print(f"There was an issue fetching the data. Error: {e}")
 
     def _get_feed_data_from_api(self):
         # This method is hard coded to the design of the api call (i.e not dynamic for all use cases/not a method to reuse for fetching other data)
@@ -43,17 +66,9 @@ class FeedComparison():
                 self._add_commentary_data(data)
                 token = data.get("next_page_token")
 
-    def _fetch_data(self, url: str):
-        try:
-            request = requests.get(url)
-            request.raise_for_status()
-            return request
-        except requests.exceptions.HTTPError as e:
-            # Possibly log/report depending on what the case would be for a bad request from automation (if we are hitting an internal api in the automation)
-            print(f"There was an issue fetching the data. Error: {e}")
 
 feed_comparison = FeedComparison(RTF_FEED_PATH)
-feed_comparison.get_feed_data_from_api()
+feed_comparison.compare_feed_data()
 
 
 """
